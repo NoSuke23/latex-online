@@ -46,10 +46,19 @@ function onInitialized(latex) {
 // Initialize server.
 var express = require('express');
 var compression = require('compression');
+var cors = require('cors')
 
 var app = express();
 app.use(compression());
 app.use(express.static(__dirname + '/public'));
+app.use(cors({
+    origin: process.env.ALLOWED_ORIGINS == '*' 
+        ? true
+        : process.env.ALLOWED_ORIGINS.split(/,\s*/),
+    methods: 'GET',
+    allowedHeaders: ['Accept', 'Accept-Encoding', 'Accept-Language', 'Origin', 'X-Requested-With', 'Content-Type'],
+    exposedHeaders: ['Access-Control-Allow-Origin', 'Access-Control-Allow-Credentials']
+}))
 
 function sendError(res, userError) {
     res.set('Content-Type', 'text/plain');
